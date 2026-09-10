@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:poliwangi_mobile_starter/modul_02/models/course.dart';
 import 'package:poliwangi_mobile_starter/modul_02/widgets/course_card.dart';
-import 'package:poliwangi_mobile_starter/modul_02/academic_dashboard_screen.dart';
+import 'package:poliwangi_mobile_starter/modul_02/widgets/academic_dashboard_screen.dart';
 
 void main() {
   group('Modul 02 Autograding: Declarative UI & Responsive Layout', () {

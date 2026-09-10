@@ -28,7 +28,7 @@ class Course {
         lecturer: 'Sepyan Purnama Kristanto',
         sks: 4,
         progress: 0.25,
-        room: 'Lab Komputer 3',
+        room: 'Lab TUK',
         category: 'Praktikum', // Ditentukan sebagai Praktikum
       ),
       Course(
@@ -37,25 +37,34 @@ class Course {
         lecturer: 'Eka Mistiko',
         sks: 3,
         progress: 0.40,
-        room: 'Ruang Teori 201',
+        room: 'LAB.PROGRAM 2',
         category: 'Teori', // Ditentukan sebagai Teori
       ),
       Course(
         code: 'TRPL503',
-        name: 'Manajemen Proyek Agile & DevOps',
-        lecturer: 'soo Hwan Kim',
+        name: 'Pendidikan Pancasila',
+        lecturer: 'Ninik Sri Rahayu',
         sks: 3,
         progress: 0.60,
-        room: 'Ruang Teori 104',
+        room: 'G1.05',
         category: 'Teori', // Ditentukan sebagai Teori
       ),
       Course(
         code: 'TRPL504',
-        name: 'Penjaminan Mutu Perangkat Lunak (QA)',
-        lecturer: 'soo hee Kim',
+        name: 'Metode dan Model Pengembangan Perangkat',
+        lecturer: 'Ruth Ema Febrita',
         sks: 2,
         progress: 0.15,
-        room: 'Lab Jaringan',
+        room: 'G6.04',
+        category: 'Teori', // Ditentukan sebagai Praktikum
+      ),
+      Course(
+        code: 'TRPL505',
+        name: 'Pemrograman Web Lanjut',
+        lecturer: 'Devit Suwardiyanto',
+        sks: 3,
+        progress: 0.50,
+        room: 'LAB.MULTIMEDIA',
         category: 'Praktikum', // Ditentukan sebagai Praktikum
       ),
     ];

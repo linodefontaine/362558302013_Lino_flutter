@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
-import 'models/course.dart';
-import 'widgets/course_card.dart';
-import 'widgets/header_banner.dart';
+import '../models/course.dart';
+import 'course_card.dart';
+import 'header_banner.dart';
 
 class AcademicDashboardScreen extends StatefulWidget {
   const AcademicDashboardScreen({super.key});
 
   @override
-  State<AcademicDashboardScreen> createState() => _AcademicDashboardScreenState();
+  State<AcademicDashboardScreen> createState() =>
+      _AcademicDashboardScreenState();
 }
 
 class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
   final List<Course> _courses = Course.getSampleCourses();
   bool _isDarkMode = false;
-  
-  // State untuk filter kategori
+
   String _selectedCategory = 'Semua';
 
-  // Getter untuk memfilter mata kuliah
   List<Course> get _filteredCourses {
     if (_selectedCategory == 'Semua') {
       return _courses;
     }
-    return _courses.where((course) => course.category == _selectedCategory).toList();
+    return _courses
+        .where((course) => course.category == _selectedCategory)
+        .toList();
   }
 
-  // Getter untuk menghitung total SKS secara dinamis
   int get _totalSks {
     return _filteredCourses.fold(0, (sum, course) => sum + course.sks);
   }
@@ -36,7 +36,6 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
     });
   }
 
-  // Widget pilihan filter kategori
   Widget _buildCategoryFilter() {
     return Wrap(
       spacing: 8.0,
@@ -74,7 +73,9 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
           foregroundColor: Colors.white,
           actions: [
             IconButton(
-              icon: Icon(_isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
+              icon: Icon(_isDarkMode
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_rounded),
               tooltip: _isDarkMode ? 'Mode Terang' : 'Mode Gelap',
               onPressed: _toggleDarkMode,
             ),
@@ -82,7 +83,6 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
         ),
         body: LayoutBuilder(
           builder: (context, constraints) {
-            // Tablet / Layar Besar (>= 600dp)
             if (constraints.maxWidth >= 600) {
               return Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -94,13 +94,22 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           'Total SKS: $_totalSks',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0284C7),
+                          ),
                         ),
                       ],
                     ),
@@ -109,11 +118,12 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
                     const SizedBox(height: 12),
                     Expanded(
                       child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
-                          mainAxisExtent: 240,
+                          childAspectRatio: 1.3,
                         ),
                         itemCount: _filteredCourses.length,
                         itemBuilder: (context, index) {
@@ -126,22 +136,30 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
               );
             }
 
-            // Mobile (< 600dp)
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20.0),
               children: [
                 const HeaderBanner(),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       'Total SKS: $_totalSks',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0284C7),
+                      ),
                     ),
                   ],
                 ),

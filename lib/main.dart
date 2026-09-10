@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'modul_01/profile_screen.dart';
-import 'modul_02/academic_dashboard_screen.dart';
+import 'modul_02/widgets/academic_dashboard_screen.dart';
 import 'modul_03/modul_03_app.dart';
 import 'modul_04/modul_04_app.dart';
 

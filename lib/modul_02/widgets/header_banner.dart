@@ -7,8 +7,8 @@ class HeaderBanner extends StatelessWidget {
 
   const HeaderBanner({
     super.key,
-    this.studentName = 'Mahasiswa TRPL',
-    this.nim = '362355401xxx',
+    this.studentName = 'Farrelino Putra Setiawan',
+    this.nim = '362558302013',
   });
 
   @override
@@ -48,7 +48,7 @@ class HeaderBanner extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
-                  'Semester 5 (2026/2027)',
+                  'Semester 3 (2026/2027)',
                   style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -72,7 +72,7 @@ class HeaderBanner extends StatelessWidget {
             runSpacing: 8,
             children: [
               _StatPill(icon: Icons.task_alt, label: '4 Matakuliah'),
-              _StatPill(icon: Icons.grade, label: 'IPK 3.85'),
+              _StatPill(icon: Icons.grade, label: 'IPK 3.95'),
               _StatPill(icon: Icons.calendar_month, label: '100% Hadir'),
             ],
           ),
