@@ -20,6 +20,7 @@ void main() {
         lecturer: 'Dosen Penguji',
         sks: 3,
         progress: 0.5,
+        category: 'Teori',
       );
 
       await tester.pumpWidget(

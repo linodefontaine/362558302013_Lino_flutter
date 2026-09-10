@@ -13,11 +13,45 @@ class AcademicDashboardScreen extends StatefulWidget {
 class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
   final List<Course> _courses = Course.getSampleCourses();
   bool _isDarkMode = false;
+  
+  // State untuk filter kategori
+  String _selectedCategory = 'Semua';
+
+  // Getter untuk memfilter mata kuliah
+  List<Course> get _filteredCourses {
+    if (_selectedCategory == 'Semua') {
+      return _courses;
+    }
+    return _courses.where((course) => course.category == _selectedCategory).toList();
+  }
+
+  // Getter untuk menghitung total SKS secara dinamis
+  int get _totalSks {
+    return _filteredCourses.fold(0, (sum, course) => sum + course.sks);
+  }
 
   void _toggleDarkMode() {
     setState(() {
       _isDarkMode = !_isDarkMode;
     });
+  }
+
+  // Widget pilihan filter kategori
+  Widget _buildCategoryFilter() {
+    return Wrap(
+      spacing: 8.0,
+      children: ['Semua', 'Teori', 'Praktikum'].map((category) {
+        return ChoiceChip(
+          label: Text(category),
+          selected: _selectedCategory == category,
+          onSelected: (selected) {
+            setState(() {
+              _selectedCategory = category;
+            });
+          },
+        );
+      }).toList(),
+    );
   }
 
   @override
@@ -46,10 +80,9 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
             ),
           ],
         ),
-        // LayoutBuilder membaca ukuran layar untuk menentukan tata letak responsif
-      body: LayoutBuilder(
+        body: LayoutBuilder(
           builder: (context, constraints) {
-            // Tablet atau layar besar (>= 600dp) menggunakan Grid penuh
+            // Tablet / Layar Besar (>= 600dp)
             if (constraints.maxWidth >= 600) {
               return Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -58,23 +91,33 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
                   children: [
                     const HeaderBanner(),
                     const SizedBox(height: 16),
-                    Text(
-                      'Mata Kuliah Semester 5 (${_courses.length} Terdaftar)',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Total SKS: $_totalSks',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
+                    _buildCategoryFilter(),
                     const SizedBox(height: 12),
                     Expanded(
                       child: GridView.builder(
-                        // 2 kolom untuk tablet/landscape sesuai ekspektasi test
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                           mainAxisExtent: 240,
                         ),
-                        itemCount: _courses.length,
+                        itemCount: _filteredCourses.length,
                         itemBuilder: (context, index) {
-                          return CourseCard(course: _courses[index]);
+                          return CourseCard(course: _filteredCourses[index]);
                         },
                       ),
                     ),
@@ -83,18 +126,29 @@ class _AcademicDashboardScreenState extends State<AcademicDashboardScreen> {
               );
             }
 
-            // Mobile (< 600dp): tata letak 1 kolom vertikal
+            // Mobile (< 600dp)
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 const HeaderBanner(),
                 const SizedBox(height: 16),
-                Text(
-                  'Mata Kuliah Semester 5 (${_courses.length} Terdaftar)',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Mata Kuliah (${_filteredCourses.length} Terdaftar)',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Total SKS: $_totalSks',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 8),
+                _buildCategoryFilter(),
                 const SizedBox(height: 12),
-                ..._courses.map((course) => CourseCard(course: course)),
+                ..._filteredCourses.map((course) => CourseCard(course: course)),
               ],
             );
           },
