@@ -29,8 +29,8 @@ class Course {
       ),
       Course(
         code: 'TRPL502',
-        name: 'Arsitektur Perangkat Lunak',
-        lecturer: 'Tim Dosen TRPL',
+        name: 'Basis data lanjut',
+        lecturer: 'Eka Mistiko',
         sks: 3,
         progress: 0.40,
         room: 'Ruang Teori 201',
@@ -38,7 +38,7 @@ class Course {
       Course(
         code: 'TRPL503',
         name: 'Manajemen Proyek Agile & DevOps',
-        lecturer: 'Tim Dosen TRPL',
+        lecturer: 'soo Hwan Kim',
         sks: 3,
         progress: 0.60,
         room: 'Ruang Teori 104',
@@ -46,7 +46,7 @@ class Course {
       Course(
         code: 'TRPL504',
         name: 'Penjaminan Mutu Perangkat Lunak (QA)',
-        lecturer: 'Tim Dosen TRPL',
+        lecturer: 'soo hee Kim',
         sks: 2,
         progress: 0.15,
         room: 'Lab Jaringan',

@@ -22,7 +22,6 @@ class CourseCard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, // Membatasi tinggi Column sesuai isinya
               children: [
                 Text(
                   course.code,
@@ -73,9 +72,10 @@ class CourseCard extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // GANTI Spacer() DENGAN SizedBox
-                const SizedBox(height: 12),
+                // Jarak vertikal tetap sebelum progress bar.
+                // Jangan gunakan Spacer: tinggi Column ini mengikuti konten Card,
+                // sehingga tidak memiliki sisa tinggi yang pasti untuk dibagi.
+                const SizedBox(height: 16),
 
                 // Progress bar silabus
                 Column(
