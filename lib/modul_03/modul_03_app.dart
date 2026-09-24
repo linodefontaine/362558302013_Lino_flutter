@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../latihan_dasar/perpustakaan/perpus_home_page.dart';
 
 class Modul03App extends StatelessWidget {
   const Modul03App({super.key});
@@ -8,12 +7,15 @@ class Modul03App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Perpustakaan Kampus',
+      title: 'Latihan Dasar Navigasi',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1976D2)),
         useMaterial3: true,
       ),
-      home: const PerpusHomePage(),
+      home: const Scaffold(
+        body: Center(
+          child: Text('Latihan Dasar Navigasi'),
+        ),
+      ), // Menampilkan langsung layar latihan awal
     );
   }
 }
