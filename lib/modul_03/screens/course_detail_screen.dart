@@ -65,7 +65,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget _buildBody() {
-    // 1. STATE 1: LOADING
     if (_isLoading) {
       return const Center(
         child: Column(
@@ -73,13 +72,15 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text('Memuat rincian silabus mata kuliah...', style: TextStyle(color: Color(0xFF64748B))),
+            Text(
+              'Memuat rincian silabus mata kuliah...',
+              style: TextStyle(color: Color(0xFF64748B)),
+            ),
           ],
         ),
       );
     }
 
-    // 2. STATE 2: ERROR (dengan Tombol Coba Lagi / Retry)
     if (_hasError) {
       return Center(
         child: Padding(
@@ -112,7 +113,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       );
     }
 
-    // 3. STATE 3: EMPTY (Data tidak ditemukan)
     if (widget.course == null) {
       return Center(
         child: Padding(
@@ -137,7 +137,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       );
     }
 
-    // 4. STATE 4: SUCCESS (Tampilkan Data Lengkap)
     final course = widget.course!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),

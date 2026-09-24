@@ -6,7 +6,6 @@ import 'package:poliwangi_mobile_starter/modul_03/providers/krs_provider.dart';
 import 'package:poliwangi_mobile_starter/modul_03/screens/krs_list_screen.dart';
 import 'package:poliwangi_mobile_starter/modul_03/screens/add_krs_screen.dart';
 import 'package:poliwangi_mobile_starter/modul_03/screens/course_detail_screen.dart';
-
 void main() {
   group('Modul 03 Autograding: Navigation & State Management (Riverpod + GoRouter)', () {
     test('1. KrsNotifier mengelola state secara immutable, mencegah duplikasi & menghitung SKS', () {

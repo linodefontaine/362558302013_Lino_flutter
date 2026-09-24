@@ -21,7 +21,10 @@ final modul03Router = GoRouter(
           builder: (context, state) {
             final code = state.pathParameters['code'] ?? '';
             final course = state.extra as KrsCourse?;
-            return CourseDetailScreen(courseCode: code, course: course);
+            return CourseDetailScreen(
+              courseCode: code,
+              course: course,
+            );
           },
         ),
       ],
