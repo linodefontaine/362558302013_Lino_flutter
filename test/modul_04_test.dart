@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poliwangi_mobile_starter/modul_04/models/announcement.dart';
-import 'package:poliwangi_mobile_starter/modul_04/repositories/announcement_repository.dart';
-import 'package:poliwangi_mobile_starter/modul_04/providers/announcement_provider.dart';
+import 'package:poliwangi_mobile_starter/pengayaan_modul_04/repositories/announcement_repository.dart';
+import 'package:poliwangi_mobile_starter/pengayaan_modul_04/providers/announcement_provider.dart';
 import 'package:poliwangi_mobile_starter/modul_04/screens/announcement_list_screen.dart';
 
 // Mock Repository untuk pengujian widget terisolasi
-class FakeAnnouncementRepository implements AnnouncementRepository {
+class FakeAnnouncementRepository extends AnnouncementRepository {
   final List<Announcement> _mockData;
   final bool shouldFail;
 
   FakeAnnouncementRepository({
     List<Announcement>? mockData,
     this.shouldFail = false,
-  }) : _mockData = mockData ?? Announcement.getSampleAnnouncements();
+  })  : _mockData = mockData ?? Announcement.getSampleAnnouncements(),
+        super();
 
   @override
   Future<List<Announcement>> getAnnouncements({String? category}) async {
@@ -24,7 +25,9 @@ class FakeAnnouncementRepository implements AnnouncementRepository {
     if (category == null || category == 'Semua') {
       return _mockData;
     }
-    return _mockData.where((a) => a.category.toLowerCase() == category.toLowerCase()).toList();
+    return _mockData
+        .where((a) => a.category.toLowerCase() == category.toLowerCase())
+        .toList();
   }
 
   @override
@@ -34,8 +37,12 @@ class FakeAnnouncementRepository implements AnnouncementRepository {
 }
 
 void main() {
-  group('Modul 04 Autograding: Networking & REST API (Dio + Repository + 4-State)', () {
-    test('1. Model Announcement mem-parsing payload JSON dan serialisasi toJson dengan benar', () {
+  group(
+      'Modul 04 Autograding: Networking & REST API (Dio + Repository + 4-State)',
+      () {
+    test(
+        '1. Model Announcement mem-parsing payload JSON dan serialisasi toJson dengan benar',
+        () {
       final jsonPayload = {
         'id': 101,
         'title': 'Uji Coba Pengumuman',
@@ -58,9 +65,10 @@ void main() {
       expect(serialized['title'], equals('Uji Coba Pengumuman'));
     });
 
-    test('2. Repository menyaring pengumuman berdasarkan kategori yang dipilih', () async {
+    test('2. Repository menyaring pengumuman berdasarkan kategori yang dipilih',
+        () async {
       final repo = FakeAnnouncementRepository();
-      
+
       final all = await repo.getAnnouncements(category: 'Semua');
       expect(all.length, greaterThanOrEqualTo(4));
 
@@ -68,11 +76,15 @@ void main() {
       expect(akademik.every((a) => a.category == 'Akademik'), isTrue);
     });
 
-    testWidgets('3. AnnouncementListScreen menampilkan AppBar, filter chips, dan daftar data sukses', (WidgetTester tester) async {
+    testWidgets(
+        '3. AnnouncementListScreen menampilkan AppBar, filter chips, dan daftar data sukses',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            announcementRepositoryProvider.overrideWithValue(FakeAnnouncementRepository()),
+            announcementRepositoryProvider.overrideWithValue(
+              FakeAnnouncementRepository(),
+            ),
           ],
           child: const MaterialApp(
             home: AnnouncementListScreen(),
@@ -95,7 +107,9 @@ void main() {
       expect(find.byType(Card), findsWidgets);
     });
 
-    testWidgets('4. AnnouncementListScreen menampilkan Error State dan tombol Coba Lagi saat request gagal', (WidgetTester tester) async {
+    testWidgets(
+        '4. AnnouncementListScreen menampilkan Error State dan tombol Coba Lagi saat request gagal',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [

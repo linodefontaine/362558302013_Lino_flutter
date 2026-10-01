@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
+// Tambahkan impor untuk modul 01 s.d. 04:
 import 'modul_01/profile_screen.dart';
-import 'modul_02/widgets/academic_dashboard_screen.dart';
 import 'modul_03/modul_03_app.dart';
 import 'modul_04/modul_04_app.dart';
 
 void main() {
-  runApp(const Modul03App());
+  runApp(const Modul04App());
 }
 
 class PoliwangiStarterApp extends StatelessWidget {
@@ -33,7 +34,8 @@ class ModuleLauncherScreen extends StatefulWidget {
 
   // Konfigurasi batas modul aktif perkuliahan (diatur oleh Dosen Pengampu)
   // Mahasiswa hanya dapat mengakses modul dengan nomor <= activeModuleUntil
-  static const int activeModuleUntil = 2; // Saat ini: Minggu ke-2 (Modul 1 & 2 terbuka)
+  static const int activeModuleUntil =
+      2; // Saat ini: Minggu ke-2 (Modul 1 & 2 terbuka)
 
   // Token akses kelas untuk membuka modul saat praktikum di lab
   static const Map<int, String> modulePasscodes = {
@@ -58,7 +60,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
         _unlockedModules.contains(moduleNumber);
   }
 
-  void _showUnlockDialog(BuildContext context, {int? targetModule, String? title}) {
+  void _showUnlockDialog(BuildContext context,
+      {int? targetModule, String? title}) {
     final controller = TextEditingController();
     final isSingleModule = targetModule != null;
 
@@ -69,7 +72,9 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
           children: [
             const Icon(Icons.vpn_key_rounded, color: Color(0xFF0284C7)),
             const SizedBox(width: 8),
-            Text(isSingleModule ? 'Buka Modul #0$targetModule' : 'Akses Dosen / Token Kelas'),
+            Text(isSingleModule
+                ? 'Buka Modul #0$targetModule'
+                : 'Akses Dosen / Token Kelas'),
           ],
         ),
         content: Column(
@@ -85,7 +90,10 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             const SizedBox(height: 12),
             const Text(
               'Masukkan Kode Token:',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B)),
             ),
             const SizedBox(height: 8),
             TextField(
@@ -93,7 +101,9 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
               autofocus: true,
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
-                hintText: isSingleModule ? 'Contoh: TRPL-M0$targetModule' : 'Contoh: POLIWANGI2026',
+                hintText: isSingleModule
+                    ? 'Contoh: TRPL-M0$targetModule'
+                    : 'Contoh: POLIWANGI2026',
                 border: const OutlineInputBorder(),
                 isDense: true,
               ),
@@ -117,7 +127,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('👨‍🏫 Mode Dosen Aktif: Seluruh modul (01–16) berhasil dibuka!'),
+                    content: Text(
+                        '👨‍🏫 Mode Dosen Aktif: Seluruh modul (01–16) berhasil dibuka!'),
                     backgroundColor: Color(0xFF059669),
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -127,7 +138,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
 
               // 2. Cek Token Spesifik Modul
               if (isSingleModule) {
-                final validPasscode = ModuleLauncherScreen.modulePasscodes[targetModule];
+                final validPasscode =
+                    ModuleLauncherScreen.modulePasscodes[targetModule];
                 if (input == validPasscode) {
                   setState(() {
                     _unlockedModules.add(targetModule);
@@ -144,7 +156,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
                 }
               } else {
                 // Cek jika mencocokkan salah satu token modul
-                for (final entry in ModuleLauncherScreen.modulePasscodes.entries) {
+                for (final entry
+                    in ModuleLauncherScreen.modulePasscodes.entries) {
                   if (input == entry.value) {
                     setState(() {
                       _unlockedModules.add(entry.key);
@@ -165,7 +178,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
               // Jika salah
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Token akses salah. Silakan tanyakan kepada dosen di kelas.'),
+                  content: Text(
+                      'Token akses salah. Silakan tanyakan kepada dosen di kelas.'),
                   backgroundColor: Colors.redAccent,
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -212,14 +226,18 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.info_outline, color: Color(0xFF0284C7), size: 20),
+                const Icon(Icons.info_outline,
+                    color: Color(0xFF0284C7), size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _unlockedModules.length >= 10
                         ? '👨‍🏫 Mode Dosen Aktif: Seluruh 16 modul terbuka untuk ditinjau.'
                         : 'Perkuliahan Aktif: Minggu ke-${ModuleLauncherScreen.activeModuleUntil} (Modul 01 & 02). Modul lanjutan dibuka sesuai jadwal.',
-                    style: const TextStyle(color: Color(0xFF0369A1), fontSize: 12, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        color: Color(0xFF0369A1),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
               ],
@@ -227,7 +245,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
           ),
 
           // Section 1: Fondasi Flutter (Modul 01–07)
-          _buildSectionHeader('Fase 1: Fondasi & Core Architecture (Minggu 1–7)'),
+          _buildSectionHeader(
+              'Fase 1: Fondasi & Core Architecture (Minggu 1–7)'),
           _buildModuleCard(
             moduleNumber: 1,
             title: 'Mobile Ecosystem & Profile App',
@@ -239,7 +258,9 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             moduleNumber: 2,
             title: 'Declarative UI & Responsive Dashboard',
             subtitle: 'BoxConstraints, LayoutBuilder 1 vs 2 Kolom, Material 3',
-            builder: () => const AcademicDashboardScreen(),
+            builder: () => const _PlaceholderScreen(
+              moduleNumber: 2,
+              title: 'Declarative UI & Responsive Dashboard'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
@@ -260,21 +281,26 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             moduleNumber: 5,
             title: 'Local Storage & Offline-First Strategy',
             subtitle: 'SharedPreferences, Hive / SQLite, Secure Storage',
-            builder: () => const _PlaceholderScreen(moduleNumber: 5, title: 'Local Storage & Offline-First Strategy'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 5,
+                title: 'Local Storage & Offline-First Strategy'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 6,
             title: 'Authentication, Security & FCM',
             subtitle: 'JWT lifecycle, token refresh, dan push notification',
-            builder: () => const _PlaceholderScreen(moduleNumber: 6, title: 'Authentication, Security & FCM'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 6, title: 'Authentication, Security & FCM'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 7,
             title: 'Clean Architecture & MVVM',
-            subtitle: 'SOLID principles, Use Cases, dan get_it Dependency Injection',
-            builder: () => const _PlaceholderScreen(moduleNumber: 7, title: 'Clean Architecture & MVVM'),
+            subtitle:
+                'SOLID principles, Use Cases, dan get_it Dependency Injection',
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 7, title: 'Clean Architecture & MVVM'),
           ),
 
           const SizedBox(height: 20),
@@ -284,59 +310,72 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             moduleNumber: 8,
             title: 'Mid Project Review (UTS)',
             subtitle: 'Live Coding UI Challenge mandiri & audit portofolio Git',
-            builder: () => const _PlaceholderScreen(moduleNumber: 8, title: 'Mid Project Review (UTS)'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 8, title: 'Mid Project Review (UTS)'),
           ),
 
           const SizedBox(height: 20),
           // Section 3: AI, Quality & Deployment (Minggu 9–15)
-          _buildSectionHeader('Fase 2: AI, Testing, CI/CD & Deployment (Minggu 9–15)'),
+          _buildSectionHeader(
+              'Fase 2: AI, Testing, CI/CD & Deployment (Minggu 9–15)'),
           _buildModuleCard(
             moduleNumber: 9,
             title: 'AI-Assisted Development',
-            subtitle: 'Validasi kritis output AI dan prompt engineering Flutter',
-            builder: () => const _PlaceholderScreen(moduleNumber: 9, title: 'AI-Assisted Development'),
+            subtitle:
+                'Validasi kritis output AI dan prompt engineering Flutter',
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 9, title: 'AI-Assisted Development'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 10,
             title: 'AI Feature Integration',
             subtitle: 'Integrasi Google Gemini API & ML Kit Text Recognition',
-            builder: () => const _PlaceholderScreen(moduleNumber: 10, title: 'AI Feature Integration'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 10, title: 'AI Feature Integration'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 11,
             title: 'Performance Optimization',
             subtitle: 'DevTools Flame Graph, deteksi jank, dan repainting',
-            builder: () => const _PlaceholderScreen(moduleNumber: 11, title: 'Performance Optimization'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 11, title: 'Performance Optimization'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 12,
             title: 'Testing & Quality Assurance',
             subtitle: 'Unit test, WidgetTester, mocking mocktail, dan coverage',
-            builder: () => const _PlaceholderScreen(moduleNumber: 12, title: 'Testing & Quality Assurance'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 12, title: 'Testing & Quality Assurance'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 13,
             title: 'CI/CD & Automation',
-            subtitle: 'GitHub Actions workflow pipeline dan Android keystore signing',
-            builder: () => const _PlaceholderScreen(moduleNumber: 13, title: 'CI/CD & Automation'),
+            subtitle:
+                'GitHub Actions workflow pipeline dan Android keystore signing',
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 13, title: 'CI/CD & Automation'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 14,
             title: 'Deployment & Monitoring',
-            subtitle: 'Firebase App Distribution, Crashlytics, dan Play Console beta',
-            builder: () => const _PlaceholderScreen(moduleNumber: 14, title: 'Deployment & Monitoring'),
+            subtitle:
+                'Firebase App Distribution, Crashlytics, dan Play Console beta',
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 14, title: 'Deployment & Monitoring'),
           ),
           const SizedBox(height: 10),
           _buildModuleCard(
             moduleNumber: 15,
             title: 'Secure Mobile Development',
-            subtitle: 'OWASP Mobile Top 10, obfuscation, dan certificate pinning',
-            builder: () => const _PlaceholderScreen(moduleNumber: 15, title: 'Secure Mobile Development'),
+            subtitle:
+                'OWASP Mobile Top 10, obfuscation, dan certificate pinning',
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 15, title: 'Secure Mobile Development'),
           ),
 
           const SizedBox(height: 20),
@@ -346,7 +385,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
             moduleNumber: 16,
             title: 'Final Capstone Expo (UAS)',
             subtitle: 'Demo live scenario test & individual code defense',
-            builder: () => const _PlaceholderScreen(moduleNumber: 16, title: 'Final Capstone Expo (UAS)'),
+            builder: () => const _PlaceholderScreen(
+                moduleNumber: 16, title: 'Final Capstone Expo (UAS)'),
           ),
         ],
       ),
@@ -393,7 +433,8 @@ class _ModuleLauncherScreenState extends State<ModuleLauncherScreen> {
         moduleNumber: moduleNumber,
         title: title,
         subtitle: subtitle,
-        onTap: () => _showUnlockDialog(context, targetModule: moduleNumber, title: title),
+        onTap: () => _showUnlockDialog(context,
+            targetModule: moduleNumber, title: title),
       );
     }
   }
@@ -422,10 +463,13 @@ class _ModuleCard extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: const Color(0xFF0284C7),
           foregroundColor: Colors.white,
-          child: Text('#$moduleNumber', style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: Text('#$moduleNumber',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
+        title: Text(title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+        subtitle: Text(subtitle,
+            style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
         trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
         onTap: onTap,
       ),
@@ -461,7 +505,10 @@ class _LockedModuleCard extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF64748B), fontSize: 15),
+          style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF64748B),
+              fontSize: 15),
         ),
         subtitle: Text(
           'Terkunci • Menunggu sesi perkuliahan Minggu ke-$moduleNumber',
@@ -497,11 +544,13 @@ class _PlaceholderScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.construction_rounded, size: 64, color: Color(0xFF0284C7)),
+              const Icon(Icons.construction_rounded,
+                  size: 64, color: Color(0xFF0284C7)),
               const SizedBox(height: 16),
               Text(
                 'Modul #$moduleNumber Segera Hadir',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(

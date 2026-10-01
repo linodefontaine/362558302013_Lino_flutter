@@ -1,17 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/krs_course.dart';
 
-// StateNotifier untuk mengelola daftar KRS yang diambil mahasiswa
-class KrsNotifier extends StateNotifier<List<KrsCourse>> {
-  KrsNotifier() : super(KrsCourse.getInitialCourses());
+// Menggunakan Notifier (standar Riverpod modern pengganti StateNotifier)
+class KrsNotifier extends Notifier<List<KrsCourse>> {
+  @override
+  List<KrsCourse> build() {
+    return KrsCourse.getInitialCourses();
+  }
 
-  // Menambah mata kuliah ke dalam KRS dengan validasi duplikasi & kuota SKS
+  // Menambah mata kuliah ke dalam KRS
   bool tambahMataKuliah(KrsCourse course) {
     // 1. Cek duplikasi kode mata kuliah
-    final exists = state.any((c) => c.code.toUpperCase() == course.code.toUpperCase());
+    final exists =
+        state.any((c) => c.code.toUpperCase() == course.code.toUpperCase());
     if (exists) return false;
 
-    // 2. Cek batas maksimal 24 SKS per semester
+    // 2. Cek batas maksimal 24 SKS
+    final totalSks = state.fold<int>(0, (sum, item) => sum + item.sks);
     if (totalSks + course.sks > 24) return false;
 
     // 3. Emit state baru secara immutable
@@ -25,16 +30,16 @@ class KrsNotifier extends StateNotifier<List<KrsCourse>> {
   }
 
   // Menghitung total SKS saat ini
-  int get totalSks => state.fold(0, (sum, c) => sum + c.sks);
+  int get totalSks => state.fold<int>(0, (sum, item) => sum + item.sks);
 }
 
-// Provider global untuk KRS
-final krsProvider = StateNotifierProvider<KrsNotifier, List<KrsCourse>>((ref) {
-  return KrsNotifier();
-});
+// Provider untuk KrsNotifier
+final krsProvider = NotifierProvider<KrsNotifier, List<KrsCourse>>(
+  KrsNotifier.new,
+);
 
-// Provider terkomputasi (computed provider) untuk total SKS
+// Provider untuk menghitung total SKS yang dibutuhkan krs_list_screen.dart
 final totalSksProvider = Provider<int>((ref) {
-  final courses = ref.watch(krsProvider);
-  return courses.fold(0, (sum, c) => sum + c.sks);
+  final list = ref.watch(krsProvider);
+  return list.fold<int>(0, (sum, item) => sum + item.sks);
 });
