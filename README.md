@@ -1,97 +1,85 @@
-# Starter Template & Laporan Praktikum Pemrograman Mobile
-### Program Studi Sarjana Terapan Teknologi Rekayasa Perangkat Lunak (TRPL)
-**Politeknik Negeri Banyuwangi — Semester Ganjil 2026**
+# Pengayaan Modul 06: Multi-Storage Session Management
 
-Panduan interaktif lengkap: [Portal Codelabs TRPL Poliwangi](https://codelabs-poliwangi.github.io/MobileDev-Codelabs/)
+Proyek ini merupakan implementasi pengayaan Modul 06 pada praktikum pemrograman mobile Flutter. Fokus utamanya adalah menerapkan **Repository Pattern** untuk mengelola sesi pengguna menggunakan beberapa strategi penyimpanan (*storage strategy*) yang bisa ditukar secara runtime tanpa merombak layer antarmuka pengguna (UI).
 
 ---
 
-## 1. Identitas Mahasiswa
+## 1. Konsep & Arsitektur
 
-> [!IMPORTANT]
-> **Wajib Mengganti Data di Bawah Ini!**  
-> Autograding CI/CD akan memeriksa apakah nilai *placeholder* di bawah ini telah diganti dengan Nama dan NIM Anda yang sebenarnya. Jika belum diganti, pengujian `verify_documentation_test.dart` akan gagal.
+Arsitektur kode disusun menggunakan pemisahan tanggung jawab (*separation of concerns*) agar logika aplikasi independen dari media penyimpanan fisik:
 
-| Informasi | Data Mahasiswa |
-|---|---|
-| **Nama Lengkap** | Farrelino Putra Setiawan |
-| **NIM** | 362558302013 |
-| **Kelas / Angkatan** | TRPL 2E / 2025 |
-| **Dosen Pengampu** | Sepyan Purnama Kristanto, M.Kom. |
+[UI Screen / Widgets]
+│
+[SesiController] ── (Mengatur state sesi & pergantian repository)
+│
+[SesiRepository] ── (Interface / Kontrak data)
+├── MemoriSesiRepository     --> SesiMemori (RAM/Volatile)
+├── PrefsSesiRepository      --> SharedPreferences (Plaintext JSON)
+└── AmanSesiRepository       --> FlutterSecureStorage (Enkripsi Hardware)
 
----
-
-## 2. Peta Kemajuan Modul Praktikum
-
-Aplikasi ini menggunakan **Sistem Kontrol Akses Modul Terpusat (Smart Gating)** di file `lib/main.dart` agar mahasiswa belajar selaras dengan ritme materi dosen di kelas:
-
-| Modul | Topik & Arsitektur | Status Akses | Perintah Self-Test Lokal | Bobot CI |
-|:---:|---|:---:|---|:---:|
-| **#01** | Mobile Ecosystem, Toolchain & Profile App | `✓ Terbuka` | `flutter test test/modul_01_test.dart` | 20 Pts |
-| **#02** | Declarative UI, BoxConstraints & Responsive Dashboard | `⚡ Aktif` | `flutter test test/modul_02_test.dart` | 20 Pts |
-| **#03** | Navigation (GoRouter), Riverpod & 4-State KRS App | `🔒 Terkunci (W03)` | `flutter test test/modul_03_test.dart` | 20 Pts |
-| **#04** | Networking, REST API Dio & Repository Pattern | `🔒 Terkunci (W04)` | `flutter test test/modul_04_test.dart` | 15 Pts |
-| **Dok** | Verifikasi Identitas Asli Mahasiswa di README | `Wajib` | `flutter test test/verify_documentation_test.dart` | 10 Pts |
-| **Lint** | Dart Code Formatting & Static Analysis | `Wajib` | `flutter analyze --no-fatal-infos` | 15 Pts |
-| **Total** | **Skor Maksimal Evaluasi Autograding** | — | `flutter test` | **100 Pts** |
-
-> [!NOTE]
-> **Membuka Modul Terkunci saat di Laboratorium:**  
-> Jika Anda sedang berada di sesi perkuliahan laboratorium dan dosen mengumumkan pembukaan modul, klik kartu modul yang terkunci di aplikasi lalu masukkan **Token Akses Kelas** yang dibagikan oleh dosen (misal: `TRPL-M03`, `TRPL-M04`, atau master passcode `POLIWANGI2026`).
+### Mengapa Menggunakan Repository Pattern?
+Dengan adanya kontrak antarmuka `SesiRepository`, class controller maupun widget tidak perlu tahu apakah data disimpan di RAM, SharedPreferences, atau Secure Storage. Jika suatu saat ingin menambah mekanisme penyimpanan baru (seperti Hive atau SQLite), cukup buat class baru yang mengimplementasikan `SesiRepository` tanpa mengubah satu pun baris kode di layar login atau beranda.
 
 ---
 
-## 3. Panduan Menjalankan & Menguji Kode
+## 2. Penjelasan Cara Kerja Komponen
 
-### A. Persiapan Lingkungan (Setup)
-```bash
-# 1. Unduh seluruh dependensi paket Flutter
-flutter pub get 
+1. **`SesiRepository` (Interface)**
+   Kontrak dasar yang mewajibkan seluruh implementasi memiliki fungsi seragam:
+   * `baca()`: Mengambil sesi aktif dari storage.
+   * `simpan(sesi)`: Menulis data sesi pengguna.
+   * `hapus()`: Menghapus data sesi saat logout.
+   * `intipMentah()`: Membaca teks asli yang tersimpan di disk untuk kebutuhan diagnostik.
 
-# 2. Jalankan aplikasi pada emulator atau perangkat fisik Android/iOS/Web
-flutter run
-```
+2. **Strategi Penyimpanan:**
+   * **Memori (`MemoriSesiRepository`)**: Menyimpan sesi pada variabel memori internal (`SesiMemori`). Cocok untuk pengujian cepat, namun sesi akan langsung hilang begitu aplikasi ditutup atau direstart (*hot restart*).
+   * **Plaintext (`PrefsSesiRepository`)**: Menggunakan `shared_preferences`. Data sesi diserialisasi menjadi teks JSON biasa. Data bertahan saat aplikasi ditutup, namun rawan dibaca jika perangkat dalam kondisi *rooted/jailbroken*.
+   * **Terenkripsi (`AmanSesiRepository`)**: Memanfaatkan pustaka `flutter_secure_storage`. Mengamankan token dan payload sesi menggunakan subsistem keamanan bawaan OS (Android Keystore atau iOS Keychain).
 
-### B. Pengujian Mandiri Sebelum Push (Self-Testing)
-Sebelum melakukan `git push` ke repositori tugas GitHub Anda, pastikan seluruh pengujian lulus di mesin lokal:
+3. **`SesiController` (State Management)**
+   Berperan sebagai penghubung antara UI dan repository. Controller ini menyimpan state aktif (`memuat`, `masuk`, `keluar`, `gagal`) dan menyediakan method `gantiStrategiPenyimpanan()` agar media penyimpanan bisa dialihkan kapan saja.
 
-```bash
-# 1. Periksa aturan kode linter Dart
-flutter analyze
-
-# 2. Jalankan unit & widget test modul yang sedang Anda kerjakan
-flutter test test/modul_01_test.dart
-flutter test test/modul_02_test.dart
-
-# 3. Jalankan seluruh test suite sekaligus
-flutter test
-```
+4. **`GerbangSesi` & `PapanDiagnostikPenyimpanan` (UI)**
+   * `GerbangSesi` memantau state controller untuk menentukan apakah aplikasi harus menampilkan layar loading, form login, atau halaman beranda.
+   * `PapanDiagnostikPenyimpanan` menyediakan kontrol visual berupa `ChoiceChip` untuk menguji pertukaran storage, serta tombol periksa untuk mengintip isi fisik penyimpanan SharedPreferences dan Secure Storage secara transparan.
 
 ---
 
-## 4. Konvensi Pesan Commit (Conventional Commits)
+## 3. Struktur Direktori
 
-Mahasiswa **wajib** menggunakan format pesan commit terstruktur:
-- `feat(w01): complete profile screen and identity info card`
-- `feat(w02): implement layoutbuilder responsive grid for tablet`
-- `fix(w02): resolve renderflex overflow in course card`
-- `feat(w03): setup gorouter declarative routes and krs notifier`
-- `feat(w04): integrate dio remote datasource and repository pattern`
-- `docs(readme): update student identity and ai reflection table`
+```text
+lib/
+├── modul_06/
+│   ├── models/
+│   │   └── sesi_pengguna.dart
+│   ├── services/
+│   │   ├── auth_api.dart
+│   │   └── sesi_memori.dart
+│   └── widgets/
+│       ├── field_kata_sandi.dart
+│       └── kartu_sesi.dart
+└── pengayaan/
+    └── modul_06/
+        ├── controllers/
+        │   └── sesi_controller.dart
+        ├── repositories/
+        │   ├── aman_sesi_repository.dart
+        │   ├── memori_sesi_repository.dart
+        │   ├── prefs_sesi_repository.dart
+        │   └── sesi_repository.dart
+        ├── screens/
+        │   ├── beranda_pengayaan_screen.dart
+        │   └── login_pengayaan_screen.dart
+        ├── storage/
+        │   ├── penyimpanan_aman.dart
+        │   └── penyimpanan_aman_platform.dart
+        ├── widgets/
+        │   ├── gerbang_sesi.dart
+        │   └── papan_diagnostik_penyimpanan.dart
+        └── modul_06_pengayaan_app.dart
 
----
-
-## 5. Catatan Penggunaan AI (Responsible AI Disclosure)
-
-Sesuai prinsip **Responsible AI** di lingkungan akademik Politeknik Negeri Banyuwangi, mahasiswa diperbolehkan menggunakan AI coding assistant (GitHub Copilot, Gemini Code Assist, ChatGPT) sebagai akselerator belajar, dengan kewajiban mencatat penggunaannya secara transparan pada tabel berikut:
-
-| Modul / File Kode | Alat AI yang Digunakan | Tujuan Penggunaan | Validasi Teknis yang Dilakukan Mahasiswa |
-|---|---|---|---|
-| * lib/main.dart | *gemini*  | *Saran Class Utama pada MY app di test/widget_test.dart* | *Melihat Class utama yang ditemeukan * |
-| *lib/modul_02/widgwts/header_banner.dart* | *Copilot Github* | *pengecekkan withOpacity,  * | *Menganti myColor.withValues(alpha: 0.2); (mengatur transparansi warna lewat channel alpha)* |
-| *lib/modul_02/academic_dashboard_screen.dart* | *Gemini* | * memeriksa bagian pembentukan layout* | * Gunakan LayoutBuilder atau MediaQuery untuk membedakan tampilan mobile dan tablet.*|
-| |
-
----
-
-*Hak Cipta © 2026 Jurusan Bisnis dan Informatika (JBI), Politeknik Negeri Banyuwangi.*
+        Alur Pengujian & Hasil AnalisisNoLangkah PengujianPerilaku yang Diamati
+        1Pilih Memori -> Login -> Restart aplikasiSesi langsung tereset ke posisi awal (logout) karena RAM dibersihkan.
+        2Pilih Prefs (Plaintext) -> Login -> Tekan "Periksa"Data sesi terbaca dalam wujud JSON string biasa pada baris SharedPreferences.
+        3Pilih Secure Storage -> Login -> Tekan "Periksa"Data tersimpan aman di Secure Storage tanpa mengekspos token plaintext sembarangan.
+        4Switch strategi saat sedang loginSesi lama tetap berada di media sebelumnya hingga dihapus atau ditimpa oleh sesi baru.

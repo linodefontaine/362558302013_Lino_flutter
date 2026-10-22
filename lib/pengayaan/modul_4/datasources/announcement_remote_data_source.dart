@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../modul_04/models/announcement.dart';
+import '../../../modul_04/models/announcement.dart';
 
 class AnnouncementRemoteDataSource {
   AnnouncementRemoteDataSource({Dio? dio})

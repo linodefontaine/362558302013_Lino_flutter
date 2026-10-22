@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poliwangi_mobile_starter/modul_04/models/announcement.dart';
-import 'package:poliwangi_mobile_starter/pengayaan_modul_04/repositories/announcement_repository.dart';
-import 'package:poliwangi_mobile_starter/pengayaan_modul_04/providers/announcement_provider.dart';
+import 'package:poliwangi_mobile_starter/pengayaan/modul_4/repositories/announcement_repository.dart';
+import 'package:poliwangi_mobile_starter/pengayaan/modul_4/providers/announcement_provider.dart';
 import 'package:poliwangi_mobile_starter/modul_04/screens/announcement_list_screen.dart';
 
 // Mock Repository untuk pengujian widget terisolasi

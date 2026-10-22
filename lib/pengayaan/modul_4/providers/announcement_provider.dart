@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../modul_04/models/announcement.dart';
+import '../../../modul_04/models/announcement.dart';
 import '../repositories/announcement_repository.dart';
 import '../repositories/announcement_repository_impl.dart';
 

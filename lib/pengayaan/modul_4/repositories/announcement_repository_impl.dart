@@ -1,4 +1,4 @@
-import '../../modul_04/models/announcement.dart';
+import '../../../modul_04/models/announcement.dart';
 import 'package:dio/dio.dart';
 import '../datasources/announcement_remote_data_source.dart';
 import 'announcement_repository.dart';

@@ -1,4 +1,4 @@
-import '../../modul_04/models/announcement.dart';
+import '../../../modul_04/models/announcement.dart';
 
 abstract class AnnouncementRepository {
   Future<List<Announcement>> getAnnouncements({String? category});
